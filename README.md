@@ -30,18 +30,7 @@ docker compose logs -f sync-worker
 
 > 数据库端口：MySQL 3306、MariaDB 3307、Postgres 5432（见 docker-compose.yml）。
 
-## 答辩与材料（已准备）
 
-- 答辩流程与逐字稿： [docs/实验报告/答辩稿.md](docs/实验报告/答辩稿.md)
-- 项目设计文档（突出同步与冲突）： [docs/实验报告/项目设计文档.md](docs/实验报告/项目设计文档.md)
-
-建议现场答辩演示顺序（10 分钟）：
-1) 启动系统并打开 `docker compose logs -f sync-worker`（展示同步在跑）
-2) 发布商品（就近写入所属校区库），刷新列表可立即看到
-3) 等待同步后在管理端执行高级查询（Hub MySQL 承载 OLAP）
-4) 人为制造冲突 → 管理端看到 `conflict_records` → 选择以哪个库为准并解决
-
-> 若 SMTP 未配置，可用 worker 日志展示冲突 token/链接生成与冲突落库。
 
 ## 系统架构（简述）
 
