@@ -1,0 +1,38 @@
+import { fileURLToPath, URL } from "node:url";
+
+import { defineConfig, loadEnv } from "vite";
+import vue from "@vitejs/plugin-vue";
+import UnoCSS from "unocss/vite";
+
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+  // 默认指向网关服务；可通过 VITE_API_PROXY_TARGET/VITE_IMAGE_PROXY_TARGET 覆盖
+  const apiProxyTarget = env.VITE_API_PROXY_TARGET ?? "http://gateway:8000";
+  const imageProxyTarget = env.VITE_IMAGE_PROXY_TARGET ?? apiProxyTarget;
+
+  return {
+    plugins: [vue(), UnoCSS()],
+    server: {
+      port: 5173,
+      host: "0.0.0.0",
+      proxy: {
+        "/api/v1": {
+          target: apiProxyTarget,
+          changeOrigin: true,
+        },
+        "/images": {
+          target: imageProxyTarget,
+          changeOrigin: true,
+        },
+      },
+    },
+    resolve: {
+      alias: {
+        "@": fileURLToPath(new URL("./src", import.meta.url)),
+      },
+    },
+    optimizeDeps: {
+      exclude: ["chunk-CGXRGQNG", "chunk-YD6TMKUN", "chunk-NHJ3D2PQ"],
+    },
+  };
+});
