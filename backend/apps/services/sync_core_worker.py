@@ -1288,9 +1288,11 @@ def run_forever(batch_size: int = 100, idle_sleep: float = 0.5) -> None:
         if force_scheduled:
             last_manual_counter = manual_counter
 
+        #对于每一个数据库源，处理其待同步的日志
         for origin_db, origin_key in EDGE_ORIGINS.items():
             cursor_name = f"edge_sync_log:{origin_db}"
             last = _load_cursor(cursor_name)
+            #拉取可以同步的日志（定时没有到就返回空）
             targets, scheduled_ids = _resolve_targets_and_due_scheduled(
                 origin_db, force_scheduled=force_scheduled
             )
@@ -1307,7 +1309,7 @@ def run_forever(batch_size: int = 100, idle_sleep: float = 0.5) -> None:
             progressed = True
             max_committed = last
             for row in rows:
-                ok = _process_edge_row(origin_db, origin_key, row, targets)
+                ok = _process_edge_row(origin_db, origin_key, row, targets)#处理同步
                 if not ok:
                     # 失败就提前停止：游标停在上一次 committed 的位置，等待下次重试。
                     break

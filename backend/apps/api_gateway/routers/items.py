@@ -535,7 +535,7 @@ async def get_my_favorites(
         ).scalars().all()
         
         items_data.append(ItemResponse(
-            id=item.id,
+            id=str(item.id),
             title=item.title,
             description=item.description,
             price=float(item.price),
@@ -543,7 +543,7 @@ async def get_my_favorites(
             images=[m.url for m in medias],
             status=item.status,
             condition=item.condition,
-            seller_id=item.seller_id,
+            seller_id=str(item.seller_id),
             seller_name=seller.username if seller else "未知",
             view_count=item.view_count,
             favorite_count=0,
